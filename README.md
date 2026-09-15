@@ -20,6 +20,42 @@ Enable CLI-averse users to safely discover, install, update, and manage Homebrew
 brew install --cask homebrew-app
 ```
 
+## Homebrew configuration
+
+BrewUI always launches Homebrew through `/bin/zsh`, including app self-upgrades. It disables
+optional user and system shell startup files with `--no-rcs --no-global-rcs` and supplies a clean environment.
+`PATH` contains only the directory of the located `brew` executable followed by `/usr/bin:/bin`.
+Your login shell, shell aliases, exported variables and custom `PATH` do not configure Homebrew in BrewUI.
+
+**Put your Homebrew configuration variables in `brew.env` files.** Homebrew reads these itself:
+
+| Scope | File |
+| --- | --- |
+| User | `~/.homebrew/brew.env` |
+| Installation | `<Homebrew prefix>/etc/homebrew/brew.env` |
+| System | `/etc/homebrew/brew.env` |
+
+For example, add this line to `~/.homebrew/brew.env`:
+
+```text
+HOMEBREW_NO_ENV_HINTS=1
+```
+
+Use literal `NAME=value` lines without `export`, shell expansion or command substitution.
+User settings normally override installation settings, which override system settings.
+`HOMEBREW_SYSTEM_ENV_TAKES_PRIORITY=1` in the system file makes that file take precedence.
+See [Homebrew's environment documentation](https://docs.brew.sh/Manpage#environment).
+An `XDG_CONFIG_HOME` exported by your shell is also ignored; use the user file above.
+
+Relaunch BrewUI after changing configuration, then check the Configuration tab. Its report and
+Doctor describe Homebrew's environment in the app and may differ from Terminal. BrewUI still
+sets output controls for its console and self-upgrade log.
+
+System zsh always reads `/etc/zshenv`, if present; its execution cannot be disabled.
+BrewUI clears the environment again afterwards and discards startup output so banners do not
+reach Homebrew's reports or the console. If startup fails before Homebrew runs, its diagnostics are retained.
+See [zsh's startup-file documentation](https://zsh.sourceforge.io/Doc/Release/Files.html).
+
 ## 🛠️ Development
 
 After cloning:

@@ -671,3 +671,16 @@
 - Keep the PR template short. Request validation appropriate to Swift and UI changes, with actual results and any checks not run.
 - `check-issues.yml` and `check-prs.yml` adapt Homebrew/brew's template enforcement and use the shared `Homebrew/.github` checker. They read templates from `main` through the API without checking out code, close stripped templates and reopen only submissions closed by this automation. The checker requires at least 75% of template headings/checkboxes, regardless of tick state, plus an AI mention for PRs. Legacy app-generated crash reports remain accepted.
 - Template warning comments mark unresolved failures and are removed once the template is complete, after any required reopen succeeds. Clear them for already-open submissions too: the stale workflow shares `github-actions[bot]`, so a historical warning cannot identify which workflow performed a later closure.
+
+## 2026-09-15 — Homebrew uses isolated system zsh
+
+- Supersedes the login-shell policy from 2026-06-23 and 2026-09-09. `ZshBrewCommandRunner` always launches `/bin/zsh --no-rcs --no-global-rcs` with an explicit environment. Login-shell discovery and startup-output filtering are removed.
+- `PATH` contains the located brew executable's directory followed by `/usr/bin:/bin`. Identity, home and temporary directories come from Foundation; shell exports, including `HOMEBREW_*` and `XDG_CONFIG_HOME`, are not inherited. Homebrew loads user settings from `brew.env` itself. The README and Configuration tab explain migration and relaunching after edits because the API-mode probe is cached.
+- Stock zsh always executes `/etc/zshenv`. A second `env -i` after startup clears its exports before brew. Both environment assignments and brew arguments travel as literal argv, never interpolated shell code. App-owned output controls and explicit fixture variables are retained.
+- Self-upgrades use the same runner by default; the handoff no longer carries a shell-selection flag. Deterministic UI tests still invoke the fake executable directly to inherit their fixture environment.
+- Live E2E launch variables no longer configure the app. CI writes the deterministic settings into `~/.homebrew/brew.env` on its ephemeral runner; manual-run guidance is in `BrewUITests/E2E/README.md`. Never run the live suite unasked.
+
+## 2026-09-15 — Filter unavoidable zsh startup output
+
+- Restores startup-output filtering for `/etc/zshenv`: clearing its exports cannot prevent banners from corrupting JSON or appearing in the console. A per-run marker gates each live stream and trims buffered output, with a leading newline to separate unterminated banners.
+- Detect the actual terminal in zsh when emitting markers so allocation fallback marks both pipes. Retain startup diagnostics if the shell exits before emitting a marker. Tests simulate startup at the runner boundary without editing system files.

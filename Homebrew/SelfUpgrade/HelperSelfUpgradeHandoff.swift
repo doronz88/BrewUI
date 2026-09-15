@@ -15,7 +15,6 @@ struct HelperSelfUpgradeHandoff: SelfUpgradeHandoff {
     let brewExecutableURL: @MainActor () throws -> URL
     /// Asked before quitting: terminating would kill the `brew` an install is streaming through.
     let commandCenter: any BrewCommandCenter
-    let usesLoginShell: Bool
     let defaultsKeyPrefix: String
     /// Carried across the relaunch so a UI-test run comes back still pointed at its fixtures.
     let relaunchArguments: [String]
@@ -64,7 +63,6 @@ struct HelperSelfUpgradeHandoff: SelfUpgradeHandoff {
             relaunchEnvironment: relaunchEnvironment,
             brewExecutablePath: brewExecutableURL.path,
             upgradeArguments: BrewCommands.selfUpgrade().arguments,
-            usesLoginShell: usesLoginShell,
             upgradeEnvironment: upgradeEnvironment,
             logFilePath: logFileURL.path,
             defaultsSuiteName: Bundle.main.bundleIdentifier ?? SelfUpgradeIdentity.bundleIdentifier,

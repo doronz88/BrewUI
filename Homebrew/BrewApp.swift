@@ -342,12 +342,11 @@ extension BrewApp {
         }
     #endif
 
-    /// The same locator and login-shell decision every other brew invocation goes through.
+    /// The same brew locator every other invocation uses.
     private static func makeHelperHandoff(_ context: SelfUpgradeLaunchContext) -> HelperSelfUpgradeHandoff {
         HelperSelfUpgradeHandoff(
             brewExecutableURL: { try context.executionContext.brewExecutableURL() },
             commandCenter: context.commandCenter,
-            usesLoginShell: context.uiTesting == nil,
             defaultsKeyPrefix: context.selfUpgradeKeyPrefix,
             relaunchArguments: relaunchArguments(uiTesting: context.uiTesting),
             relaunchEnvironment: relaunchEnvironment(uiTesting: context.uiTesting),

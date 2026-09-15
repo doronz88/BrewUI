@@ -54,6 +54,10 @@ Guiding patterns:
 
 Run Homebrew commands **asynchronously** via subprocess; support **cancellation**; **stream or preserve** stdout/stderr for transparency and logs. Always make the **exact command** visible to the user; treat **CLI text output as unstable** (tolerant parsing, fallbacks).
 
+Production commands, including self-upgrades, use system zsh with optional startup files disabled
+and an explicit environment. `PATH` is the located brew directory followed by `/usr/bin:/bin`.
+Homebrew loads user configuration from `brew.env`; see [configuration and the `/etc/zshenv` exception](README.md#homebrew-configuration).
+
 ## JSON API
 
 Use the [Homebrew JSON API](https://formulae.brew.sh/docs/api/) where it helps. Prefer **optional / resilient decoding** — schema can change; **never crash** on unknown fields. Combine with CLI only as needed when the app grows.

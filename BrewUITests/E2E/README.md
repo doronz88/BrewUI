@@ -56,6 +56,10 @@ Responsibilities are split: **arrange and clean up by shelling out to real brew*
 **act through the app's UI** using the same page objects the stubbed suite uses. A broken arrange then
 reads as a fixture failure rather than as a red assertion inside the flow under test.
 
+The app ignores inherited Homebrew variables. [CI](../../.github/workflows/e2e.yml) writes the
+fixture settings to `~/.homebrew/brew.env`. For equivalent manual runs, merge those settings into
+your configuration and restore it afterwards. The test harness does not edit your configuration.
+
 ## Requirements
 
 - Homebrew installed (`/opt/homebrew/bin/brew` or `/usr/local/bin/brew`) — the suite fails by name in

@@ -8,8 +8,7 @@ import Foundation
 /// Arranges and cleans up live-suite state through the machine's real `brew`, never as the code under
 /// test: the tests themselves act through the app's own path to brew.
 nonisolated enum Brew {
-    /// Applied to every brew this suite runs, the app's included. Without `HOMEBREW_NO_AUTO_UPDATE` an
-    /// install can spend minutes updating the tap first, which reads as a hung test.
+    /// Applied to fixture setup and cleanup. CI puts the same settings in `brew.env` for the app.
     static let determinismEnvironment = [
         "HOMEBREW_NO_AUTO_UPDATE": "1",
         "HOMEBREW_NO_ANALYTICS": "1",
